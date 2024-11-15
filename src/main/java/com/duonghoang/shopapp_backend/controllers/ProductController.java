@@ -1,4 +1,4 @@
-package com.duonghoang.shopapp_backend.controller;
+package com.duonghoang.shopapp_backend.controllers;
 
 import com.duonghoang.shopapp_backend.dtos.ProductDTO;
 import jakarta.validation.Valid;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

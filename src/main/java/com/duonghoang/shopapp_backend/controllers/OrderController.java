@@ -1,4 +1,4 @@
-package com.duonghoang.shopapp_backend.controller;
+package com.duonghoang.shopapp_backend.controllers;
 
 import com.duonghoang.shopapp_backend.dtos.OrderDTO;
 import jakarta.validation.Valid;
