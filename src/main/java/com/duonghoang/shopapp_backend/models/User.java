@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.util.Date;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {
@@ -40,7 +42,14 @@ public class User extends BaseEntity {
 
     private boolean active;
 
-    private Date date;
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+
+    @Column(name = "facebook_account_id")
+    private String facebookAccountId;
+
+    @Column(name = "google_account_id")
+    private String googleAccountId;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

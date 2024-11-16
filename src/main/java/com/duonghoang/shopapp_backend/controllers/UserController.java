@@ -2,7 +2,10 @@ package com.duonghoang.shopapp_backend.controllers;
 
 import com.duonghoang.shopapp_backend.dtos.UserDTO;
 import com.duonghoang.shopapp_backend.dtos.UserLoginDTO;
+import com.duonghoang.shopapp_backend.services.user.IUserService;
+import com.duonghoang.shopapp_backend.services.user.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final IUserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult){
         try{
@@ -28,6 +34,7 @@ public class UserController {
             if (!userDTO.getPassword().equals(userDTO.getRetypePassword())){
                 return ResponseEntity.badRequest().body("Password does not match!");
             }
+            userService.createUser(userDTO);
             return ResponseEntity.ok("Register successfully!");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -42,6 +49,7 @@ public class UserController {
                     .toList();
             return ResponseEntity.badRequest().body(errorsMessage);
         }
-        return ResponseEntity.ok("Some token");
+        String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
+        return ResponseEntity.ok(token);
     }
 }
