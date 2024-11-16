@@ -5,6 +5,7 @@ import com.duonghoang.shopapp_backend.dtos.ProductImageDTO;
 import com.duonghoang.shopapp_backend.exception.DataNotFoundException;
 import com.duonghoang.shopapp_backend.models.Product;
 import com.duonghoang.shopapp_backend.models.ProductImage;
+import com.duonghoang.shopapp_backend.responses.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -13,7 +14,7 @@ public interface IProductService {
 
     Product getProductById(Long id) throws Exception;
 
-    Page<Product> getAllProducts(PageRequest pageRequest);
+    Page<ProductResponse> getAllProducts(PageRequest pageRequest);
 
     Product updateProduct(long id, ProductDTO dto);
 

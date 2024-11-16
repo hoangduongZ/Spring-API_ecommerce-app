@@ -10,6 +10,7 @@ import com.duonghoang.shopapp_backend.models.ProductImage;
 import com.duonghoang.shopapp_backend.repositories.CategoryRepository;
 import com.duonghoang.shopapp_backend.repositories.ProductImageRepository;
 import com.duonghoang.shopapp_backend.repositories.ProductRepository;
+import com.duonghoang.shopapp_backend.responses.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,18 +40,18 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductById(Long productId) {
         return productRepository.findById(productId).orElseThrow(()
-        -> new DataNotFoundException("Cannot find product with id = "+productId));
+                -> new DataNotFoundException("Cannot find product with id = " + productId));
     }
 
     @Override
-    public Page<Product> getAllProducts(PageRequest pageRequest) {
-        return productRepository.findAll(pageRequest);
+    public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest).map(ProductResponse::fromProduct);
     }
 
     @Override
     public Product updateProduct(long id, ProductDTO dto) {
-        Product existingProduct= getProductById(id);
-        if (existingProduct != null){
+        Product existingProduct = getProductById(id);
+        if (existingProduct != null) {
             Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() ->
                     new DataNotFoundException("Category not found!"));
             existingProduct.setName(dto.getName());
@@ -65,7 +66,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(long id) {
-        Optional<Product> existingProduct= productRepository.findById(id);
+        Optional<Product> existingProduct = productRepository.findById(id);
         existingProduct.ifPresent(productRepository::delete);
     }
 
@@ -75,7 +76,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductImage createProductImage(Product product, ProductImageDTO dto){
+    public ProductImage createProductImage(Product product, ProductImageDTO dto) {
         long productId = product.getId();
         ProductImage productImage = ProductImage.builder().product(product)
                 .image(dto.getImage())
@@ -84,10 +85,10 @@ public class ProductService implements IProductService {
         return productImageRepository.save(productImage);
     }
 
-    public void isValidSize(long productId){
-        int productSize= productImageRepository.findAllByProductId(productId).size();
-        if (productSize > ProductImage.MAXIMUM_IMAGES_PER_PRODUCT){
-            throw new InvalidParamException("Number of images must be <= "+ ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+    public void isValidSize(long productId) {
+        int productSize = productImageRepository.findAllByProductId(productId).size();
+        if (productSize > ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
+            throw new InvalidParamException("Number of images must be <= " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
     }
 }
