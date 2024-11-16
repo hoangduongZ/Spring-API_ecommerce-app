@@ -8,6 +8,9 @@ import com.duonghoang.shopapp_backend.services.product.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +47,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<?> getAllProducts(@RequestParam("page") int page,
                                             @RequestParam("limit") int limit) {
-        return ResponseEntity.status(200).body("get Products ");
+        PageRequest pageRequest= PageRequest.of(page,limit, Sort.by("createAt").descending());
+        Page<Product> productPages= productService.getAllProducts(pageRequest);
+        int totalPage= productPages.getTotalPages();
+        List<Product> products= productPages.getContent();
+        return ResponseEntity.status(200).body(products);
     }
 
     @GetMapping("{id}")
