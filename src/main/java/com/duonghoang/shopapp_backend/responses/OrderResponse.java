@@ -3,12 +3,17 @@ package com.duonghoang.shopapp_backend.responses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 @Builder
 public class OrderResponse {
     private Long id;
