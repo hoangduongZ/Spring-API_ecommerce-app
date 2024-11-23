@@ -2,8 +2,11 @@ package com.duonghoang.shopapp_backend.controllers;
 
 import com.duonghoang.shopapp_backend.dtos.CategoryDTO;
 import com.duonghoang.shopapp_backend.models.Category;
-import com.duonghoang.shopapp_backend.services.category.CategoryService;
+import com.duonghoang.shopapp_backend.responses.LoginResponse;
 import com.duonghoang.shopapp_backend.services.category.ICategoryService;
+import com.duonghoang.shopapp_backend.component.LocalizationUtil;
+import com.duonghoang.shopapp_backend.utils.MessageKeys;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -26,6 +29,7 @@ import java.util.List;
 //@Validated  // debug chưa vao trong method -> class/method level
 public class CategoryController {
     private final ICategoryService categoryService;
+    private final LocalizationUtil localizationUtils;
 
     @PostMapping
     public ResponseEntity<?> creatCategory(@RequestBody @Valid CategoryDTO categoryDTO,
@@ -46,9 +50,12 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable("id") Long id,@RequestBody @Valid CategoryDTO dto){
+    public ResponseEntity<?> updateCategory(@PathVariable("id") Long id, @RequestBody @Valid CategoryDTO dto,
+                                            HttpServletRequest request){
         categoryService.updateCategory(id, dto);
-        return ResponseEntity.status(203).body("This is update categories " + id);
+        return ResponseEntity.status(200).body(LoginResponse.builder().message(
+                localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_CATEGORY_SUCCESSFULLY)
+        ).build());
     }
 
     @DeleteMapping("/{id}")
