@@ -62,7 +62,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String phoneNumber, String password) throws Exception {
+    public String login(String phoneNumber, String password, long roleId) throws Exception {
         User user = userRepository.findByPhoneNumber(phoneNumber).orElseThrow(
                 ()-> new UsernameNotFoundException("Invalid username or password"));
 
@@ -72,6 +72,12 @@ public class UserService implements IUserService{
                 throw new BadCredentialsException("Invalid user name or password");
             }
         }
+//        Check role
+        Role role = roleRepository.findById(roleId).orElseThrow(()->new DataNotFoundException("Role not existed"));
+        if (user.getRole().getId() != roleId){
+            throw new BadCredentialsException("Invalid user name or password");
+        }
+
 //        Authenticate
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 phoneNumber, password, user.getAuthorities()

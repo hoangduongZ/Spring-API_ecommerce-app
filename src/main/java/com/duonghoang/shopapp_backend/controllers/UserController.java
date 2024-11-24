@@ -59,7 +59,7 @@ public class UserController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorsMessage);
             }
-            String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
+            String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword(), userLoginDTO.getRoleId());
             return ResponseEntity.ok(LoginResponse.builder().message(
                             localizationUtils.getLocalizedMessage(
                                     MessageKeys.LOGIN_SUCCESSFULLY))

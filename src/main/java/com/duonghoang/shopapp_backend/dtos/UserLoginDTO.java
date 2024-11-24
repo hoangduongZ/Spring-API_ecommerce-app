@@ -19,5 +19,6 @@ public class UserLoginDTO {
     @NotBlank(message = "Password is required!")
     private String password;
 
-
+    @JsonProperty("role_id")
+    private long roleId;
 }

@@ -11,6 +11,7 @@ import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -48,17 +49,27 @@ public class ProductController {
     private final IProductService productService;
 
     @GetMapping
-    public ResponseEntity<?> getAllProducts(@RequestParam("page") int page,
-                                            @RequestParam("limit") int limit) {
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createAt").descending());
-        Page<ProductResponse> productPages = productService.getAllProducts(pageRequest);
+    public ResponseEntity<?> getAllProducts(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                limit,
+                Sort.by("id").ascending());
+        Page<ProductResponse> productPages = productService.getAllProducts(keyword, categoryId,pageRequest);
         int totalPage = productPages.getTotalPages();
         List<ProductResponse> products = productPages.getContent();
-        return ResponseEntity.status(200).body(ProductListResponse.builder().products(products).totalPages(totalPage).build());
+        return ResponseEntity.status(200).body(
+                ProductListResponse.builder().
+                        products(products).
+                        totalPages(totalPage).
+                        build());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getProductById(@PathVariable("id") Long id){
+    public ResponseEntity<?> getProductById(@PathVariable("id") Long id) {
         try {
             Product existingProduct = productService.getProductById(id);
             return ResponseEntity.status(200).body(ProductResponse.fromProduct(existingProduct));
@@ -118,6 +129,23 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
+        try {
+            Path imagePath = Paths.get("uploads/" + imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     private String storeFile(MultipartFile file) throws IOException {
         if (isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
@@ -148,7 +176,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
-        try{
+        try {
             productService.deleteProduct(id);
             return ResponseEntity.status(200).body(String.format("Product with id %d deleted successfully !", id));
         } catch (Exception e) {

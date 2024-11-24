@@ -30,8 +30,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
@@ -39,7 +38,7 @@ public class WebSecurityConfig {
                             )
                             .permitAll()
                             .requestMatchers(GET,
-                                    String.format("%s/roles/**", apiPrefix)).permitAll()
+                                    String.format("%s/roles**", apiPrefix)).permitAll()
                             .requestMatchers(GET,
                                     String.format("%s/categories/**", apiPrefix)).hasAnyRole("ADMIN", "USER")
                             .requestMatchers(POST,
@@ -49,13 +48,16 @@ public class WebSecurityConfig {
                             .requestMatchers(DELETE,
                                     String.format("%s/categories/**", apiPrefix)).hasAnyRole("ADMIN")
                             .requestMatchers(GET,
-                                    String.format("%s/products**", apiPrefix)).hasAnyRole("ADMIN", "USER")
+                                    String.format("%s/products**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                     String.format("%s/products/**", apiPrefix)).hasAnyRole("ADMIN")
                             .requestMatchers(PUT,
                                     String.format("%s/products/**", apiPrefix)).hasAnyRole("ADMIN")
                             .requestMatchers(DELETE,
                                     String.format("%s/products/**", apiPrefix)).hasAnyRole("ADMIN")
+                            // Path access photo
+                            .requestMatchers(GET,
+                                    String.format("%s/products/images/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                     String.format("%s/order/**", apiPrefix)).hasAnyRole("USER")
                             .requestMatchers(GET,
@@ -78,7 +80,6 @@ public class WebSecurityConfig {
 
         http.cors(httpSecurityCorsConfigurer -> {
             CorsConfiguration configuration = new CorsConfiguration();
-//                      Tất cả các loại domain, ai vào cũng được
             configuration.setAllowedOrigins(List.of("http://localhost:4200"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
             configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
