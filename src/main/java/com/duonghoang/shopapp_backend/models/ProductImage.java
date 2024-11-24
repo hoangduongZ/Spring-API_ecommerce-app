@@ -1,5 +1,6 @@
 package com.duonghoang.shopapp_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,13 +24,13 @@ import lombok.Setter;
 @Builder
 public class ProductImage {
     public static final int MAXIMUM_IMAGES_PER_PRODUCT = 5;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 
     @Column(name = "image_url", length = 300)
