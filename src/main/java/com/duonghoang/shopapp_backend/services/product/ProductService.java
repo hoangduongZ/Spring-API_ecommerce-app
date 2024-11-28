@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,10 +90,21 @@ public class ProductService implements IProductService {
         return productImageRepository.save(productImage);
     }
 
+    @Override
     public void isValidSize(long productId) {
         int productSize = productImageRepository.findAllByProductId(productId).size();
         if (productSize > ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
             throw new InvalidParamException("Number of images must be <= " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
+    }
+
+    @Override
+    public List<Product> findProductByIds(List<Long> ids) {
+        for (var id : ids) {
+            if (!productRepository.existsById(id)) {
+                throw new DataNotFoundException("Product not found!");
+            }
+        }
+        return productRepository.findProductsByIds(ids);
     }
 }

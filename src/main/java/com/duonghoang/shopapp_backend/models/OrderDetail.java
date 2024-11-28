@@ -1,5 +1,6 @@
 package com.duonghoang.shopapp_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonBackReference   // avoid circular
     private Order order;
 
     @ManyToOne
@@ -38,7 +40,7 @@ public class OrderDetail {
     private Float price;
 
     @Column(name = "number_of_products", nullable = false)
-    private int numberOfProducts;
+    private long numberOfProducts;
 
     @Column(name = "total_money", nullable = false)
     private Float totalMoney;

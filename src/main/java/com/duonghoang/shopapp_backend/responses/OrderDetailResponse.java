@@ -33,7 +33,7 @@ public class OrderDetailResponse {
     private Float price;
 
     @JsonProperty("number_of_products")
-    private int numberOfProducts;
+    private long numberOfProducts;
 
     @JsonProperty("total_money")
     private Float totalMoney;

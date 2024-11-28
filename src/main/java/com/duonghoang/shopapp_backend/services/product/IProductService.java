@@ -9,6 +9,8 @@ import com.duonghoang.shopapp_backend.responses.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface IProductService {
     Product createProduct(ProductDTO productDTO) throws Exception;
 
@@ -26,4 +28,6 @@ public interface IProductService {
     ProductImage createProductImage(Product product, ProductImageDTO dto);
 
     void isValidSize(long productId);
+
+    List<Product> findProductByIds(List<Long> ids);
 }

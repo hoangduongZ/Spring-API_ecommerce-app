@@ -1,5 +1,6 @@
 package com.duonghoang.shopapp_backend.responses;
 
+import com.duonghoang.shopapp_backend.models.OrderDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +28,7 @@ public class OrderResponse {
     private String phoneNumber;
 
     private String address;
+    private String email;
     private String note;
 
     @JsonProperty("order_date")
@@ -39,6 +42,12 @@ public class OrderResponse {
     @JsonProperty("shipping_method")
     private String shippingMethod;
 
+    @JsonProperty("payment_method")
+    private String paymentMethod;
+
     @JsonProperty("shipping_address")
     private String shippingAddress;
+
+    @JsonProperty("order_details")
+    private List<OrderDetail> orderDetails;
 }

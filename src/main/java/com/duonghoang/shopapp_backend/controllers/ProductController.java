@@ -184,6 +184,16 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/by-ids")
+    public ResponseEntity<?> findProductsByIds(@RequestParam("ids") List<Long> ids){
+        try{
+            List<Product> product= productService.findProductByIds(ids);
+            return ResponseEntity.ok().body(product);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     //    @PostMapping("/generateFakeProducts")
     private ResponseEntity<String> generateFakeProduct() {
         Faker faker = new Faker();

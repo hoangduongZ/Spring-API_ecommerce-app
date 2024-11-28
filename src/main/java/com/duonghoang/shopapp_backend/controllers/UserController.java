@@ -6,6 +6,7 @@ import com.duonghoang.shopapp_backend.dtos.UserLoginDTO;
 import com.duonghoang.shopapp_backend.models.User;
 import com.duonghoang.shopapp_backend.responses.LoginResponse;
 import com.duonghoang.shopapp_backend.responses.RegisterResponse;
+import com.duonghoang.shopapp_backend.responses.UserResponse;
 import com.duonghoang.shopapp_backend.services.user.IUserService;
 import com.duonghoang.shopapp_backend.utils.MessageKeys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,11 +62,28 @@ public class UserController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorsMessage);
             }
-            String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword(), userLoginDTO.getRoleId());
+            String token = userService.login(
+                    userLoginDTO.getPhoneNumber(),
+                    userLoginDTO.getPassword(),
+                    userLoginDTO.getRoleId() == null ? 1: userLoginDTO.getRoleId());
             return ResponseEntity.ok(LoginResponse.builder().message(
                             localizationUtils.getLocalizedMessage(
                                     MessageKeys.LOGIN_SUCCESSFULLY))
                     .token(token).build());
+        } catch (Exception ex) {
+            return ResponseEntity.ok(LoginResponse.builder().message(
+                            localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, ex.getMessage()))
+                    .build());
+        }
+    }
+
+    @PostMapping("/details")
+//    Needed 'Authorization' in RequestHeader
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
+        try {
+            String extractedToken = token.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
         } catch (Exception ex) {
             return ResponseEntity.ok(LoginResponse.builder().message(
                             localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, ex.getMessage()))

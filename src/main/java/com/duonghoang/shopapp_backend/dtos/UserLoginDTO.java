@@ -20,5 +20,5 @@ public class UserLoginDTO {
     private String password;
 
     @JsonProperty("role_id")
-    private long roleId;
+    private Long roleId;
 }
